@@ -113,6 +113,28 @@ libp2p-noise = { path = "path/to/libp2p-noise-pqc", default-features = false }
 - **XX Pattern (Classical)**: `-> e, <- e, ee, -> s, se, <- s, es`
 - **PQXX Pattern (Post-Quantum)**: `-> e, <- e, ee, -> s, se, <- s, es, -> kem, <- kem`
 
+### Unsafe Code and Lifetime Management
+
+This implementation contains minimal unsafe code to work around lifetime constraints in the clatter library. 
+The unsafe code is used specifically for RNG (Random Number Generator) lifetime management:
+
+```rust
+let rng_ref: &'static mut rand::rngs::StdRng = unsafe { &mut *rng_ptr };
+```
+
+**Why this is necessary:**
+- Clatter's handshake constructors require a `&'static mut` reference to an RNG
+- Our RNG is owned by the session struct, which doesn't have a static lifetime
+- This is essentially a design limitation in clatter's API that forces this workaround
+
+**Why this is safe:**
+1. **Stable Memory Location**: The RNG is stored in a `Box<StdRng>`, giving it a stable heap address
+2. **Controlled Lifetime**: The handshake object never outlives the session that owns the RNG
+3. **Single Ownership**: We only create one handshake per session, preventing multiple mutable references
+4. **Contained Scope**: The unsafe operation is isolated and well-documented
+
+This represents the only unsafe code in the implementation and is a direct consequence of clatter's lifetime requirements rather than a design choice in our implementation.
+
 ## Testing
 
 Run the test suite:
