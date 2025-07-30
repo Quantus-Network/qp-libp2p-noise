@@ -62,9 +62,8 @@ use std::{collections::HashSet, fmt::Write, pin::Pin};
 
 use futures::prelude::*;
 pub use io::Output;
-use libp2p_core::{
-    upgrade::{InboundUpgrade, OutboundUpgrade},
-    UpgradeInfo,
+use libp2p_core::upgrade::{
+    self, InboundConnectionUpgrade, OutboundConnectionUpgrade, UpgradeInfo,
 };
 use libp2p_identity as identity;
 use libp2p_identity::PeerId;
@@ -178,7 +177,7 @@ impl UpgradeInfo for Config {
     }
 }
 
-impl<T> InboundUpgrade<T> for Config
+impl<T> InboundConnectionUpgrade<T> for Config
 where
     T: AsyncRead + AsyncWrite + Unpin + Send + 'static,
 {
@@ -208,7 +207,7 @@ where
     }
 }
 
-impl<T> OutboundUpgrade<T> for Config
+impl<T> OutboundConnectionUpgrade<T> for Config
 where
     T: AsyncRead + AsyncWrite + Unpin + Send + 'static,
 {
