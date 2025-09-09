@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 name = "libp2p-noise"
 repository = "https://github.com/Quantus-Network/qp-libp2p-noise"
-version = "0.45.0"
+version = "0.45.10"
 
 [dependencies]
 asynchronous-codec = "0.6"
