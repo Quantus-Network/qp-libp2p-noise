@@ -58,14 +58,14 @@ pub(crate) struct State<T> {
     /// The DH public key for signature verification (stored separately from handshake key)
     dh_remote_pubkey: Option<Vec<u8>>,
     /// The WebTransport certhashes of the responder, if any.
-    responder_webtransport_certhashes: Option<HashSet<Multihash>>,
+    responder_webtransport_certhashes: Option<HashSet<Multihash<64>>>,
     /// The received extensions of the remote, if any.
     remote_extensions: Option<Extensions>,
 }
 
 /// Extensions
 struct Extensions {
-    webtransport_certhashes: HashSet<Multihash>,
+    webtransport_certhashes: HashSet<Multihash<64>>,
 }
 
 impl<T> State<T>
@@ -82,7 +82,7 @@ where
         session: ClatterSession,
         identity: KeypairIdentity,
         expected_remote_key: Option<identity::PublicKey>,
-        responder_webtransport_certhashes: Option<HashSet<Multihash>>,
+        responder_webtransport_certhashes: Option<HashSet<Multihash<64>>>,
     ) -> Self {
         Self {
             identity,

@@ -136,9 +136,9 @@ impl Codec {
 
 impl Encoder for Codec {
     type Error = io::Error;
-    type Item = StaticHandshakePayloadOrBytes;
+    type Item<'a> = StaticHandshakePayloadOrBytes;
 
-    fn encode(&mut self, item: Self::Item, dst: &mut BytesMut) -> Result<(), Self::Error> {
+    fn encode(&mut self, item: Self::Item<'_>, dst: &mut BytesMut) -> Result<(), Self::Error> {
         match (self, item) {
             (
                 Codec::Handshake {

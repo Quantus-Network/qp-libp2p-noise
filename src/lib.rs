@@ -81,7 +81,7 @@ use crate::{
 pub struct Config {
     dh_keys: AuthenticKeypair,
     use_post_quantum: bool,
-    webtransport_certhashes: Option<HashSet<Multihash>>,
+    webtransport_certhashes: Option<HashSet<Multihash<64>>>,
 
     /// Prologue to use in the noise handshake.
     ///
@@ -132,7 +132,7 @@ impl Config {
     /// responder.
     ///
     /// In case of responder, these certhashes will be reported to initiator.
-    pub fn with_webtransport_certhashes(mut self, certhashes: HashSet<Multihash>) -> Self {
+    pub fn with_webtransport_certhashes(mut self, certhashes: HashSet<Multihash<64>>) -> Self {
         self.webtransport_certhashes = Some(certhashes).filter(|h| !h.is_empty());
         self
     }
@@ -261,14 +261,14 @@ pub enum Error {
     #[allow(clippy::enum_variant_names)]
     SigningError(#[from] libp2p_identity::SigningError),
     #[error("Expected WebTransport certhashes ({}) are not a subset of received ones ({})", certhashes_to_string(.0), certhashes_to_string(.1))]
-    UnknownWebTransportCerthashes(HashSet<Multihash>, HashSet<Multihash>),
+    UnknownWebTransportCerthashes(HashSet<Multihash<64>>, HashSet<Multihash<64>>),
 }
 
 #[derive(Debug, thiserror::Error)]
 #[error(transparent)]
 pub struct DecodeError(quick_protobuf::Error);
 
-fn certhashes_to_string(certhashes: &HashSet<Multihash>) -> String {
+fn certhashes_to_string(certhashes: &HashSet<Multihash<64>>) -> String {
     let mut s = String::new();
 
     for hash in certhashes {
